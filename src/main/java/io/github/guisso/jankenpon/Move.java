@@ -33,16 +33,16 @@ package io.github.guisso.jankenpon;
 public enum Move {
     NONE, ROCK, PAPER, SCISSORS;
 
-    private static int p1ConsecutiveWins;
-    private static int p2ConsecutiveWins;
+    private static int playerAConsecutiveWins;
+    private static int playerBConsecutiveWins;
 
     static {
         resetConsecutiveWins();
     }
 
     public static void resetConsecutiveWins() {
-        p1ConsecutiveWins = -1;
-        p2ConsecutiveWins = -1;
+        playerAConsecutiveWins = -1;
+        playerBConsecutiveWins = -1;
     }
 
     public Result versus(Move opponentMove,
@@ -56,8 +56,8 @@ public enum Move {
 
         // Tie
         if (this == opponentMove) {
-            p1ConsecutiveWins = -1;
-            p2ConsecutiveWins = -1;
+            playerAConsecutiveWins = -1;
+            playerBConsecutiveWins = -1;
 
             return switch (this) {
                 case ROCK ->
@@ -76,7 +76,7 @@ public enum Move {
 
             computePointsToPlayerA(playerA, playerB);
 
-            return switch (p1ConsecutiveWins) {
+            return switch (playerAConsecutiveWins) {
                 case 0 ->
                     Result.P1_PAPER_WRAPS_ROCK_ONCE;
                 case 1 ->
@@ -91,7 +91,7 @@ public enum Move {
 
             computePointsToPlayerA(playerA, playerB);
 
-            return switch (p1ConsecutiveWins) {
+            return switch (playerAConsecutiveWins) {
                 case 0 ->
                     Result.P1_ROCK_CRUSHES_SCISSORS_ONCE;
                 case 1 ->
@@ -106,7 +106,7 @@ public enum Move {
 
             computePointsToPlayerA(playerA, playerB);
 
-            return switch (p1ConsecutiveWins) {
+            return switch (playerAConsecutiveWins) {
                 case 0 ->
                     Result.P1_SCISSORS_CUT_PAPER_ONCE;
                 case 1 ->
@@ -121,7 +121,7 @@ public enum Move {
 
             computePointsToPlayerB(playerB, playerA);
 
-            return switch (p2ConsecutiveWins) {
+            return switch (playerBConsecutiveWins) {
                 case 0 ->
                     Result.P2_PAPER_WRAPS_ROCK_ONCE;
                 case 1 ->
@@ -136,7 +136,7 @@ public enum Move {
 
             computePointsToPlayerB(playerB, playerA);
 
-            return switch (p2ConsecutiveWins) {
+            return switch (playerBConsecutiveWins) {
                 case 0 ->
                     Result.P2_ROCK_CRUSHES_SCISSORS_ONCE;
                 case 1 ->
@@ -151,7 +151,7 @@ public enum Move {
 
             computePointsToPlayerB(playerB, playerA);
 
-            return switch (p2ConsecutiveWins) {
+            return switch (playerBConsecutiveWins) {
                 case 0 ->
                     Result.P2_SCISSORS_CUT_PAPER_ONCE;
                 case 1 ->
@@ -167,27 +167,28 @@ public enum Move {
     private static void computePointsToPlayerA(
             AbstractPlayer playerA, AbstractPlayer playerB) {
         
-        p2ConsecutiveWins = -1;
+        playerBConsecutiveWins = -1;
         playerB.decrementScore();
 
-        p1ConsecutiveWins
-                = ++p1ConsecutiveWins > 1
+        playerAConsecutiveWins
+                = ++playerAConsecutiveWins > 1
                         ? 2
-                        : p1ConsecutiveWins;
+                        : playerAConsecutiveWins;
 
-        playerA.incrementScoreBy(p1ConsecutiveWins + 1);
+        playerA.incrementScoreBy(playerAConsecutiveWins + 1);
     }
 
     private static void computePointsToPlayerB(
             AbstractPlayer playerB, AbstractPlayer playerA) {
-        p1ConsecutiveWins = -1;
+        
+        playerAConsecutiveWins = -1;
         playerA.decrementScore();
 
-        p2ConsecutiveWins
-                = ++p2ConsecutiveWins > 1
+        playerBConsecutiveWins
+                = ++playerBConsecutiveWins > 1
                         ? 2
-                        : p2ConsecutiveWins;
+                        : playerBConsecutiveWins;
 
-        playerB.incrementScoreBy(p2ConsecutiveWins + 1);
+        playerB.incrementScoreBy(playerBConsecutiveWins + 1);
     }
 }
